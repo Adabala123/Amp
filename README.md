@@ -88,7 +88,47 @@ Note: Replace my-cluster with your cluster name and YOUR_AWS_ACCOUNT_ID with you
          ]
       }
 
-  ** Now execute below command **
+  Now execute below command
   
       aws iam create-policy --policy-name "AWSManagedPrometheusWriteAccessPolicy" --policy-documentfile://AWSManagedPrometheusWriteAccessPolicy.json
 
+# Create an IAM role for Kubernetes service account
+  First we have to create a file like **TrustPolicy.json** and modify 
+
+        {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "arn:aws:iam::234408914382:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/7F2B2EC4E79C42490CA66E029809209A"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "oidc.eks.us-east-1.amazonaws.com/id/7F2B2EC4E79C42490CA66E029809209A:sub": "system:serviceaccount:prometheus:iamproxy-service-account"
+              }
+            }
+          },
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "Federated": "arn:aws:iam::234408914382:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/7F2B2EC4E79C42490CA66E029809209A"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+              "StringEquals": {
+                "oidc.eks.us-east-1.amazonaws.com/id/7F2B2EC4E79C42490CA66E029809209A:sub": "system:serviceaccount:grafana:iamproxy-service-account"
+              }
+            }
+          }
+        ]
+      }
+ Now execute below command
+ 
+        aws iam create-role --role-name "EKS-AMP-ServiceAccount-Role" --assume-role-policy-document file://TrustPolicy.json --description "SERVICE ACCOUNT IAM ROLE DESCRIPTION" --query "Role.Arn" --output text
+
+# Attach the trust and permission policies to the role
+Give your role name aand policy name in below command if you made any changes 
+
+      aws iam attach-role-policy --role-name "EKS-AMP-ServiceAccount-Role" --policy-arn "arn:aws:iam::357171621133:policy/AWSManagedPrometheusWriteAccessPolicy"
