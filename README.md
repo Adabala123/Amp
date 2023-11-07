@@ -65,3 +65,29 @@ Note: Replace my-cluster with your cluster name and YOUR_AWS_ACCOUNT_ID with you
       eksctl get addon --cluster my-cluster | grep ebs
 # A successfully installation returns the following output:
       aws-ebs-csi-driver    v1.20.0-eksbuild.1    ACTIVE    0    arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/AmazonEKS_EBS_CSI_Driver
+
+# Get IODC Provider data.
+      aws eks describe-cluster --name eksampcluster --query "cluster.identity.oidc.issuer" --output text
+# Creating a new permission policy AWSManagedPrometheusWriteAccessPolicy
+  We have to create file name like AWSManagedPrometheusWriteAccessPolicy.json and modify and copy as per your requirement
+  
+        {
+         "Version":"2012-10-17",
+         "Statement":[
+            {
+               "Effect":"Allow",
+               "Action":[
+                  "aps:RemoteWrite",
+                  "aps:QueryMetrics",
+                  "aps:GetSeries",
+                  "aps:GetLabels",
+                  "aps:GetMetricMetadata"
+               ],
+               "Resource":"arn:aws:aps:us-east-1:234408914382:workspace/ws-cf81ea0e-d6a4-40b3-8888-701186bb538f"
+            }
+         ]
+      }
+
+  Now execute below command 
+      aws iam create-policy --policy-name "AWSManagedPrometheusWriteAccessPolicy" --policy-documentfile://AWSManagedPrometheusWriteAccessPolicy.json
+
