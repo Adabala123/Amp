@@ -17,7 +17,7 @@
 Note: Replace my-cluster with your cluster name.
  
 # Deploy the Amazon EBS CSI driver:
-Create an IAM trust policy file, similar to the following example:
+Create an IAM trust policy file, **vi trust-policy.json** similar to the following example:
 
       cat <<EOF > trust-policy.json
       {
