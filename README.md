@@ -18,27 +18,24 @@ Note: Replace my-cluster with your cluster name.
  
 # Deploy the Amazon EBS CSI driver:
 Create an IAM trust policy file, **vi trust-policy.json** similar to the following example:
-
-      cat <<EOF > trust-policy.json
       {
         "Version": "2012-10-17",
         "Statement": [
           {
             "Effect": "Allow",
             "Principal": {
-              "Federated": "arn:aws:iam::YOUR_AWS_ACCOUNT_ID:oidc-provider/oidc.eks.YOUR_AWS_REGION.amazonaws.com/id/YOUR_OIDC ID"
+              "Federated": "arn:aws:iam::234408914382:oidc-provider/oidc.eks.us-east-1.amazonaws.com/id/7F2B2EC4E79C42490CA66E029809209A"
             },
             "Action": "sts:AssumeRoleWithWebIdentity",
             "Condition": {
               "StringEquals": {
-                "oidc.eks.YOUR_AWS_REGION.amazonaws.com/id/<XXXXXXXXXX45D83924220DC4815XXXXX>:aud": "sts.amazonaws.com",
-                "oidc.eks.YOUR_AWS_REGION.amazonaws.com/id/<XXXXXXXXXX45D83924220DC4815XXXXX>:sub": "system:serviceaccount:kube-system:ebs-csi-controller-sa"
+                "oidc.eks.us-east-1.amazonaws.com/id/7F2B2EC4E79C42490CA66E029809209A:aud": "sts.amazonaws.com",
+                "oidc.eks.us-east-1.amazonaws.com/id/7F2B2EC4E79C42490CA66E029809209A:sub": "system:serviceaccount:kube-system:ebs-csi-controller-sa"
               }
             }
           }
         ]
       }
-      EOF
 Note: Replace YOUR_AWS_ACCOUNT_ID with your account ID. Replace YOUR_AWS_REGION with your Region. Replace your OIDC ID with the output from creating your IAM OIDC provider.
 
 # Create an IAM role named Amazon_EBS_CSI_Driver:
