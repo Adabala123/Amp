@@ -18,6 +18,7 @@ Note: Replace my-cluster with your cluster name.
  
 # Deploy the Amazon EBS CSI driver:
 Create an IAM trust policy file, **vi trust-policy.json** similar to the following example:
+
       {
         "Version": "2012-10-17",
         "Statement": [
@@ -36,6 +37,7 @@ Create an IAM trust policy file, **vi trust-policy.json** similar to the followi
           }
         ]
       }
+
 Note: Replace YOUR_AWS_ACCOUNT_ID with your account ID. Replace YOUR_AWS_REGION with your Region. Replace your OIDC ID with the output from creating your IAM OIDC provider.
 
 # Create an IAM role named Amazon_EBS_CSI_Driver:
