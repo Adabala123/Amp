@@ -132,3 +132,68 @@ Note: Replace my-cluster with your cluster name and YOUR_AWS_ACCOUNT_ID with you
 Give your role name aand policy name in below command if you made any changes 
 
       aws iam attach-role-policy --role-name "EKS-AMP-ServiceAccount-Role" --policy-arn "arn:aws:iam::357171621133:policy/AWSManagedPrometheusWriteAccessPolicy"
+
+# EKS cluster hosts an OIDC provider with a public discovery endpoint
+
+      eksctl utils associate-iam-oidc-provider --cluster eksampcluster --approve
+
+Note: change cluster name
+
+# Add prometheus repo
+        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+# Deploy prometheus server 
+create a file like **amp_ingest_override_values.yaml** and modify required fields
+      #amp_ingest_override_values.yaml
+      serviceAccounts:
+        ## Disable alert manager roles
+        ##
+        server:
+              name: "iamproxy-service-account"
+              annotations:
+                  eks.amazonaws.com/role-arn: "arn:aws:iam::234408914382:role/EKS-AMP-ServiceAccount-Role"
+        alertmanager:
+          create: false
+      
+      
+        ## Disable pushgateway
+        ##
+        pushgateway:
+          create: false
+      
+      
+      server:
+        remoteWrite:
+              - url: https://aps-workspaces.us-east-1.amazonaws.com/workspaces/ws-cf81ea0e-d6a4-40b3-8888-701186bb538f/api/v1/remote_write
+                sigv4:
+                  region: us-east-1
+                queue_config:
+                  max_samples_per_send: 1000
+                  max_shards: 200
+                  capacity: 2500
+      
+      
+        ## Use a statefulset instead of a deployment for resiliency
+        ##
+        statefulSet:
+          enabled: true
+      
+      
+        ## Store blocks locally for short time period only
+        ##
+        retention: 1h
+        
+      ## Disable alert manager
+      ##
+      alertmanager:
+        enabled: false
+      
+      
+      ## Disable pushgateway
+      ##
+      pushgateway:
+        enabled: false
+ # Create Namespace and Deploy prometheus   
+        kubectl create ns prometheus
+        helm install prometheus-for-amp prometheus-community/prometheus -n prometheus -f ./amp_ingest_override_values.yaml --set serviceAccounts.server.annotations."eks\.amazonaws\.com/role-arn"="arn:aws:iam::357171621133:role/EKS-AMP-ServiceAccount-Role" --set server.remoteWrite[0].url="https://aps-workspaces.us-east-1.amazonaws.com/workspaces/ws-df62d422-be47-4032-aaea-fad52cf0eab2/api/v1/remote_write" --set server.remoteWrite[0].sigv4.region=us-east-1
+
+ Note : Change role arn and workspace url region
