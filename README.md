@@ -143,7 +143,7 @@ Note: change cluster name
         helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
 # Deploy prometheus server 
 create a file like **amp_ingest_override_values.yaml** and modify required fields
-      #amp_ingest_override_values.yaml
+      amp_ingest_override_values.yaml
       serviceAccounts:
         ## Disable alert manager roles
         ##
