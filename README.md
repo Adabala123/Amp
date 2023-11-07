@@ -88,6 +88,7 @@ Note: Replace my-cluster with your cluster name and YOUR_AWS_ACCOUNT_ID with you
          ]
       }
 
-  Now execute below command 
+  ** Now execute below command **
+  
       aws iam create-policy --policy-name "AWSManagedPrometheusWriteAccessPolicy" --policy-documentfile://AWSManagedPrometheusWriteAccessPolicy.json
 
