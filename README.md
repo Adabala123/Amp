@@ -1,4 +1,4 @@
-# Amp
+# Setup Managed Prometheus and Grafana in Eks cluster
 
 
 # To verify that your AWS IAM OpenID Connect (OIDC) provider exists for your cluster, run the following command:
@@ -90,7 +90,7 @@ Note: Replace my-cluster with your cluster name and YOUR_AWS_ACCOUNT_ID with you
 
   Now execute below command
   
-      aws iam create-policy --policy-name "AWSManagedPrometheusWriteAccessPolicy" --policy-documentfile://AWSManagedPrometheusWriteAccessPolicy.json
+      aws iam create-policy --policy-name "AWSManagedPrometheusWriteAccessPolicy" --policy-document file://AWSManagedPrometheusWriteAccessPolicy.json
 
 # Create an IAM role for Kubernetes service account
   First we have to create a file like **TrustPolicy.json** and modify 
