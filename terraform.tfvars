@@ -1,0 +1,5 @@
+account_id="119108287116"
+cluster_name="my-eks"
+oidc="oidc.eks.us-east-1.amazonaws.com/id/9EBB80E59ADC2A85CDD2DA9001F746EC"
+region="us-east-1"
+workspace_id="arn:aws:aps:us-east-1:119108287116:workspace/ws-95deac38-f460-4ac8-ba3f-9117a81b2e68"
